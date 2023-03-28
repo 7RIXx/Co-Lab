@@ -13,6 +13,8 @@ Primary Tasks:
 
 Breakdown:
 
+0) Learn how to most effectively read IO from network card
+
 1) Create general modules to hold: main, classes, helper_funcs, arguments, footers, headers, citations
 
 2) Create a class "snoopie" to actively copy networking requests into a hidden file
