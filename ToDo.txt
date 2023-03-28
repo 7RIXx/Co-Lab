@@ -29,18 +29,20 @@ Breakdown:
   
   4.2) could maybe get creative with different data transforms screedie can do to the data, but let's just get it talking and test the code for efficacy before we get too fancy
   
-5) Test runs
+5) Write main logic loop
+  
+6) Test runs
 
-  5.1) Test on Windows and Linux
+  6.1) Test on Windows and Linux
   
-  5.2) Set up a virtual network with known safe traffic and test, expecting no output
+  6.2) Set up a virtual network with known safe traffic and test, expecting no output
   
-  5.3) Run a reverse shell on the virtual network, see if it reports
+  6.3) Run a reverse shell on the virtual network, see if it reports
   
-  5.4) Run small data exfiltration on the virt net, see if it reports
+  6.4) Run small data exfiltration on the virt net, see if it reports
   
-  5.5) Run large data exfil on the virt net, see if it reports
+  6.5) Run large data exfil on the virt net, see if it reports
   
-  5.6) Run small data infiltration 
+  6.6) Run small data infiltration 
   
-  5.7) Run large data infiltration
+  6.7) Run large data infiltration
