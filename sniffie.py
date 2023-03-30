@@ -1,6 +1,7 @@
 from classes import Snoopie
 from netaddr import IPAddress #pip install netaddr
 import pyshark
+from arguments import args
 
 #sudo apt install tshark
 
@@ -19,13 +20,18 @@ class Sniffie(Snoopie):
         #self.ipadress = ipadress
         
         #Applying a time out
-        self.Timout = 5
+        self.Timeout = 5
+        # After testing, set to global argument
+        #self.Timeout = args.timeout
 
         #number of packet count
         self.PacketCount = 15
 
         #
         self.ifaceName = 'wlan0'
+        # After testing, set to global argument
+        #self.ifaceName = args.interface
+        
         self.filter_traffic = 'port 443'
     
 
@@ -40,7 +46,7 @@ class Sniffie(Snoopie):
     def capture(self):
         #capturing live packet, then assign to cap(capture) variable
         cap = pyshark.LiveCapture(interface=self.ifaceName, bpf_filter=self.filter_traffic)
-        cap.sniff(timeout=self.Timout, packet_count=self.PacketCount)
+        cap.sniff(timeout=self.Timeout, packet_count=self.PacketCount)
 
         if len(cap) >=1:
             for packet in cap:
