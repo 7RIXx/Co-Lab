@@ -1,0 +1,5 @@
+1) https://stackoverflow.com/questions/46636230/reading-and-processing-packets-from-network-interface-with-python
+
+2) https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
+
+3) 
