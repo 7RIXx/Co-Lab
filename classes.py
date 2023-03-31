@@ -1,6 +1,8 @@
 #!/bin/env python3
 
 from arguments import args
+from netaddr import IPAddress
+import pyshark, psutil
 
 '''
 
@@ -18,22 +20,19 @@ class Snoopie():
 		
 		# Label the location we will be monitoring
 		# Using a .txt file with a few lines of foo for now to test the logic
-		self.location = 'testfile.txt'
+		self.location = '/dev/net/' + args.interface
 		
 		# Temporary storehouse for incoming data
-		self.harLis = []
+		self.raw_harvest = []
 		
 	# Create method to bring data in from location
 	def harvest(self):
-		with open(self.location, 'r+') as f:
-		
-			# Read each line into the temporary working file
-			# Strip the newline char
-			self.harLis = [x.strip() for x in f.readlines()]
-			
-			# Reset pointer
-			f.seek(0)
+		# get all active net connections returned in named tuple
+		# includes addressFamily, tcp/udp, local_addr, remote_addr, conn_status, process_id
+		self.raw_harvest = psutil.net_connections()
 			
 		# Debug Test
 		if args.debug:
-			print(f'\n {self.harLis} \n')
+			for item in self.raw_harvest:
+				print('\r\n' + str(item))
+			
