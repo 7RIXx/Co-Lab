@@ -15,7 +15,9 @@ import classes as c
 
 # Test Snoopie Class
 snoopie = c.Snoopie()
-snoopie.harvest()
+for item in snoopie.harvest():
+	print('\n\n')
+	print(item)
 
 
 ### END PRODUCTION TESTING ###
