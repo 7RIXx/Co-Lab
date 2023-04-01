@@ -1,5 +1,13 @@
+
+
+
+
 1) https://stackoverflow.com/questions/46636230/reading-and-processing-packets-from-network-interface-with-python
 
 2) https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
 
-3) 
+3) https://medium.com/nerd-for-tech/tuples-and-namedtuple-in-python-8df24bda15f2
+
+4) https://www.w3schools.com/python/ref_string_split.asp
+
+5)
