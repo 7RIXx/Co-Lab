@@ -19,9 +19,6 @@ class Snoopie():
 		# Create dict to hold data, this dict will be output into other classes
 		self.doghouse = {}
 		
-		# Label the location we will be monitoring
-		# Using a .txt file with a few lines of foo for now to test the logic
-		self.location = '/dev/net/' + args.interface
 		
 		# Temporary storehouse for initial incoming data
 		self.raw_harvest = []
@@ -40,6 +37,25 @@ class Snoopie():
 		for connection in self.raw_harvest:
 			self.refined_harvest.append(help.transform_tuple(connection))
 			
+		# For active PIDs, locate the total Up/Down bytes and append to each connection-set
+		# Can access on Linux at /proc/[PID]/net/dev
+		for connection in range(len(self.refined_harvest)):
+			
+			# Make following codeblock more readable
+			tmp = self.refined_harvest[connection]
+			
+			# Protect from dead connections
+			if tmp['ProcessID'] != 'None':
+				
+				# Take the two element LIST returned from get_data
+				# And insert 'DataUp' 'DataDown' elements to the refined_harvest DICT
+				values = help.get_data(tmp,tmp['ProcessID'])
+				tmp['UpData'] = values[0]
+				tmp['DownData'] = values[1]
+				
+				
+				
+			
 		return self.refined_harvest
 	
 		
@@ -48,3 +64,4 @@ class Snoopie():
 		if args.debug:
 			for item in self.raw_harvest:
 				print('\r\n' + str(item))
+			
