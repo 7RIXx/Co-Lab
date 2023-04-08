@@ -1,7 +1,4 @@
 
-
-
-
 1) https://stackoverflow.com/questions/46636230/reading-and-processing-packets-from-network-interface-with-python
 
 2) https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
@@ -10,4 +7,20 @@
 
 4) https://www.w3schools.com/python/ref_string_split.asp
 
-5)
+5) https://unix.stackexchange.com/questions/181468/get-total-bytes-sent-by-pid
+
+6) https://psutil.readthedocs.io/
+
+7) https://www.thepythoncode.com/article/make-a-network-usage-monitor-in-python
+
+8) https://stackoverflow.com/questions/8270092/remove-all-whitespace-in-a-string
+
+9) https://builtin.com/software-engineering-perspectives/python-remove-character-from-string
+
+10) https://www.w3schools.com/python/python_ref_list.asp
+
+11) https://whatsabyte.com/P1/byteconverter.htm
+
+12) https://www.tutorialspoint.com/How-to-round-down-to-2-decimals-a-float-using-Python
+
+13) https://www.geeksforgeeks.org/floor-ceil-function-python/
