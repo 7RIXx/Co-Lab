@@ -8,6 +8,8 @@ help_menu = '''
 
 	
 	-to, --timeout :: Set a timeout delay (Range 1-1000)
+
+	-i, --interface :: Set a network interface card
 	
 	-h, --help :: Show this menu
 	
@@ -31,6 +33,7 @@ help_menu = '''
 parser = argparse.ArgumentParser(add_help=False)
 
 parser.add_argument('-to', '--timeout', type=int)
+parser.add_argument('-i', '-interface', type=str)
 parser.add_argument('-h', '--help', action='store_true')
 parser.add_argument('--debug', action='store_true')
 

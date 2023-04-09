@@ -1,60 +1,99 @@
 from classes import Snoopie
-from netaddr import IPAddress #pip install netaddr
-import pyshark
+from netaddr import IPAddress, IPNetwork 
+import pyshark, socket, ssl
 from arguments import args
 
-#sudo apt install tshark
-
-'''
-
-There are two different is_private() method, one is from the IPAddress class
-Note: I couln't come up with a better name, but feel free to change it.
-
-'''
 
 class Sniffie(Snoopie):
     def __init__(self):
         super().__init__()
-        ''' using this right now for testing purposes as of right now as a place holder 
-        of the actual IP's comming from the file'''
-        #self.ipadress = ipadress
-        
-        #Applying a time out
-        self.Timeout = 5
-        # After testing, set to global argument
-        #self.Timeout = args.timeout
 
-        #number of packet count
-        self.PacketCount = 15
 
-        #
-        self.ifaceName = 'wlan0'
-        # After testing, set to global argument
-        #self.ifaceName = args.interface
+
+
+    def is_secure(self, hostname):
+        #create an SSL context object wich we will use to wipe the soccket connection
+        #and establish a secure connecttion with the server
+        context = ssl.create_default_context()
+
+        #establishing a TCP connection with the server and port number
+        with socket.create_connection(self.hostname, 'portnumber') as sock:
+
+            #wrap sock socket with the SSL context to create a secure socket. 
+            #And specifies the host name to be verifiy against the servers certificate
+            with context.wrap_socket(sock, server_hostname=self.hostname) as secure_sock:
+                #Retrives the certificate from the server, witch we'll use to verify the hostname
+                cert = secure_sock.getpeercert()
+
+                #Checks if the CERT variable is not none and if the certificate match the hostname
+                if cert and ssl.match_hostname(cert, self.hostname):
+                    return f"{hostname} is secure"
+                return f"{hostname} is not secure"
         
-        self.filter_traffic = 'port 443'
+
+    def is_dns_resolvable(self, hostname):
+        """
+        Check if DNS resolves a hostame.
+        """
+
+        try:
+            #Get the IP address from the hostname using the gethostbyname_ex() method
+            _, _, addresses = socket.gethostbyname_ex(hostname)
+
+            # Cheking to see if the ip address were returned.
+            if len(addresses) > 0:
+                return True
+            return False
+        except socket.gaierror:
+            return False
     
 
-    def is_private(self):
-        #cheking to see if the ipaddr is private or not
-        if IPAddress(self.IP).is_private():
-            return True
+    def is_ip_private(self, ip):
+        """
+        check if an IP adress is private or public
+        """
 
-        return False
+        try:
+            # create am IP address object
+            ip_address = IPAddress(self, ip)
 
-    #create method to capture network traffic
-    def capture(self):
-        #capturing live packet, then assign to cap(capture) variable
-        cap = pyshark.LiveCapture(interface=self.ifaceName, bpf_filter=self.filter_traffic)
-        cap.sniff(timeout=self.Timeout, packet_count=self.PacketCount)
+            #check if the ip is one the private IP address in ranges.
+            ip_range = ['127.0.0.0/12', '172.16.0.0/12', '192.168.0.0/16']
+            for private_range in (ip_range):
+                if ip_address in IPNetwork(private_range):
+                    return True
+                return False
+            
+        except Exception:
+            print("Invalid IP address")
+            return False
 
-        if len(cap) >=1:
-            for packet in cap:
-                return f'Src: {packet.ip.src} \nDst: {packet.ip.dst}'
+
+
+
+    def capture_network_traffic(self, iface='wlan0', Timeout=5, packet_count=7):
+        """
+        Capture and prints out network traffic on specified network interface
+
+        Default interface: 'wlan0'
+        
+        Default timeout: 5
+        
+        Default Packet Count: 7
+        """
+        self.iface = iface
+        self.Timeout = Timeout
+        self.packet_count = packet_count
+
+        #capturing live packtes from specified interface
+        capture = pyshark.LiveCapture(interface=self.iface)
+        capture.sniff(timeout=self.Timeout)
+
+        #reading from each packets as they arrived
+        for packet in capture.sniff_continuously(packet_count=self.packet_count):
+            return packet
+
+        
+    def __str__(self) -> str:
+        return self.capture_network_traffic()
     
-
-x = Sniffie()
-
-res = x.capture()
-
-print(res)
