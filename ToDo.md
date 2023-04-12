@@ -3,7 +3,8 @@ Network Monitoring Tool
 
 Primary Tasks:
 
-1) Monitor traffic on host
+1) Monitor traffic on host; Snoopie will provide historical harvesting and analyses while Sniffie will provide active harvesting and analyses
+ 
 2) Run checks on each IP in communication with host
 
   2.1) Is the IP a private or public network address?
@@ -13,7 +14,7 @@ Primary Tasks:
 
 Left to Do:
 
-0) Fix Sniffie, or absorb Sniffie into Snoopie methods?
+0) Finish Sniffie
 
 1) Assess the need for a Screedie (reporting class) or if Snoopie/Sniffie could absorb that functionality
   
