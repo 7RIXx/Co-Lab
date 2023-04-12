@@ -29,15 +29,26 @@ def transform_tuple(single_connection):
 	try:
 		controlled_dict['Local Host'] = str(connection_dict['laddr']).split('\'', 2)[1]
 	except IndexError:
-		controlled_dict['Local Host'] = None
+		controlled_dict['Local Host'] = 'None'
+		
+	# Transform Local Port value
+	try:
+		controlled_dict['Local Port'] = str(connection_dict['laddr']).split('\'', 2)[2].split('=')[1].split(')')[0]
+	except IndexError:
+		controlled_dict['Local Port'] = 'None'
 	
 
 	# Transform Remote Host value
 	try:
 		controlled_dict['Remote Host'] = str(connection_dict['raddr']).split('\'', 2)[1]
 	except IndexError:
-		controlled_dict['Remote Host'] = None
-	
+		controlled_dict['Remote Host'] = 'None'
+		
+	# Transform Remote Port value
+	try:
+		controlled_dict['Remote Port'] = str(connection_dict['raddr']).split('\'', 2)[2].split('=')[1].split(')')[0]
+	except IndexError:
+		controlled_dict['Remote Port'] = 'None'
 
 	# Transform Protocol value
 	if str(connection_dict['type']) == 'SocketKind.SOCK_STREAM':
@@ -117,8 +128,56 @@ def convert_bytes(number_in_bytes):
 	else:
 		value = math.ceil(num)
 		return str(num) + ' B'
+		
 	
+
+'''
+
+Helper function to convert the results of convert_bytes back into singular bytes
+Helps with data_size assessment in classes.Snoopie.analyze
+
+'''
+
+def little_bytes(updata_as_str,downdata_as_str):
+
+	# Make code more readable
+	upstr = updata_as_str
+	dnstr = downdata_as_str
 	
+	upint,downint = 0,0
+	
+	# Working math set
+	terabytes, gigabytes, megabytes, kilobytes = 1099511627776, 1073741824, 1048576, 1024
+	
+	# Figure out which conversion is required
+	upnote, upint = upstr.split(' ')[1], int(upstr.split(' ')[0])
+	dnnote, dnint = dnstr.split(' ')[1], int(dnstr.split(' ')[0])
+	
+	if upnote == 'KB':
+		upint = math.ceil(upint * kilobytes)
+	elif upnote == 'MB':
+		upint = math.ceil(upint * megabytes)
+	elif upnote == 'GB':
+		upint = math.ceil(upint * gigabytes)
+	elif upnote == 'TB':
+		upint = math.ceil(upint * terabytes)
+	else:
+		if args.debug:
+			raise
+	if dnnote == 'KB':
+		dnint = math.ceil(dnint * kilobytes)
+	elif dnnote == 'MB':
+		dnint = math.ceil(dnint * megabytes)
+	elif dnnote == 'GB':
+		dnint = math.ceil(dnint * gigabytes)
+	elif dnnote == 'TB':
+		dnint = math.ceil(dnint * terabytes)
+	else:
+		if args.debug:
+			raise
+		
+	# Return a list back
+	return [upint,dnint]
 	
 '''
 
@@ -136,9 +195,6 @@ def parse_proc(chunk):
 	# Seperate into a list organized by interface
 	# Creates a LIST of interface readouts
 	chunk = chunk.split('\n')
-	
-	#debug
-	print('\n' + 'CHUNK' + '\n' + str(chunk) + '\n')
 	
 	# Crush all the whitespace
 	for char in range(len(chunk)):
@@ -195,9 +251,6 @@ def get_data(single_connection,pid_as_str):
 		# PID file location to pull up/down data from
 		location = str('/proc/' + pid + '/net/dev')
 		f = open(location,'r')
-			
-		#debug
-		print('\ntest file open\n')
 		
 		proc_dev_net_return = f.read()
 			
@@ -213,10 +266,28 @@ def get_data(single_connection,pid_as_str):
 		raise
 		
 	# Returns the two element LIST from parse_proc
-	return return_data	
+	return return_data
 	
+'''
+
+Helper function to take suspect list and figure out which connections are the same with multiple reasons and consolidate them
+
+'''
+
+def sus_check(sus_list_as_dict):
 	
+	#db
+	print('SUS::')
+	print(sus_list_as_dict[0])
+
+	# Make code more readable
+	susl = sus_list_as_dict
 	
+	pass
+
+
+
+
 	
 	
 	
@@ -230,7 +301,7 @@ wlp5s0: 129105035   88014    0    0    0     0          0         0  4531208   3
 lxcbr0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
 '''
 	
-	
+	### REPLACE PID WITH SOME ACTIVE PID FROM TEST SYSTEM ###
 	get_data(sample,'2190')
 	
 	
