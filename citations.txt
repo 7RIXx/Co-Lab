@@ -1,4 +1,7 @@
 
+
+
+
 1) https://stackoverflow.com/questions/46636230/reading-and-processing-packets-from-network-interface-with-python
 
 2) https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
@@ -24,3 +27,13 @@
 12) https://www.tutorialspoint.com/How-to-round-down-to-2-decimals-a-float-using-Python
 
 13) https://www.geeksforgeeks.org/floor-ceil-function-python/
+
+14) https://dnspython.readthedocs.io/
+
+15) https://www.dnspython.org/examples.html
+
+16) https://docs.python.org/3/library/socket.html
+
+17) https://youtu.be/GjSP1DigdGY
+
+18) https://www.w3schools.com/python/gloss_python_arithmetic_operators.asp
