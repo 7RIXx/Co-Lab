@@ -1,7 +1,7 @@
 #!/bin/env python3
 
 from arguments import args
-import math
+import math, deepdiff
 
 '''
 
@@ -274,22 +274,28 @@ Helper function to take suspect list and figure out which connections are the sa
 
 '''
 
-def sus_check(sus_list_as_dict):
+def sus_check(sus_list):
 	
-	#db
-	print('SUS::')
-	print(sus_list_as_dict[0])
-
-	# Make code more readable
-	susl = sus_list_as_dict
+	susl, temp, trunc_ips = sus_list, {}, []
 	
-	pass
+	# Move all rem_host to dict keys
+	for conn in susl:
+		if conn['Remote Host'] not in temp.keys():
+			temp[conn['Remote Host']] = []
+			
+	# Move all suspicions to value of relevant remote_host key
+	for conn in susl:
+		if conn['Suspicion'] not in temp[conn['Remote Host']]:
+			trunc_ips.append(conn)
+			temp[conn['Remote Host']].append(conn['Suspicion'])
 
-
-
-
-	
-	
+		
+	# Pass appropriate suspicions into sus field in trunc_ips
+	for conn in trunc_ips:
+		conn['Suspicion'] = temp[conn['Remote Host']]
+		
+		
+	return trunc_ips
 	
 if __name__ == "__main__":
 
