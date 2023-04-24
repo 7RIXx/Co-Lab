@@ -20,10 +20,11 @@ for item in snoopie.harvest():
 	print(item)
 
 
-packets = Sniffie()
 
-for packet in packets.capture_network_traffic():
-	print(f'\n{packet}')
+
+test = Sniffie()
+print(test.is_dns_resolvable())
+print(test.is_ip_private())
 
 
 ### END PRODUCTION TESTING ###

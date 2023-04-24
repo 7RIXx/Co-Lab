@@ -117,7 +117,7 @@ def convert_bytes(number_in_bytes):
 		value = math.ceil(num / terabytes)
 		return str(value) + ' TB'
 	elif giga:
-		value = math.ceil(num / gigbytes)
+		value = math.ceil(num / gigabytes)
 		return str(value) + ' GB'
 	elif mega:
 		value = math.ceil(num / megabytes)

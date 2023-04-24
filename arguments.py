@@ -32,8 +32,8 @@ help_menu = '''
 # build argument parser
 parser = argparse.ArgumentParser(add_help=False)
 
-parser.add_argument('-to', '--timeout', type=int)
-parser.add_argument('-i', '-interface', type=str)
+parser.add_argument('-to', '--timeout', type=int, default=5)
+parser.add_argument('-i', '--interface', type=str, default='wlan0')
 parser.add_argument('-h', '--help', action='store_true')
 parser.add_argument('--debug', action='store_true')
 
