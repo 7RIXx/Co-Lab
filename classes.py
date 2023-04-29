@@ -3,8 +3,8 @@
 from arguments import args
 import helpers as help
 from netaddr import IPAddress
-import pyshark, psutil, socket
-
+import pyshark, psutil, socket, json
+from datetime import datetime
 
 '''
 
@@ -69,7 +69,9 @@ class Snoopie():
 			
 	# Create a method to analyze the refined_harvest (dns_check, size_check, secure_check)
 	def analyze(self):
-	
+		
+
+		
 		# Make code more readable
 		harvest = self.refined_harvest
 		
@@ -80,8 +82,6 @@ class Snoopie():
 			remip = harvest[item]['Remote Host']
 			
 			try:
-				if args.debug:
-					print(remip)
 				
 				# Try a reverse DNS lookup
 				dnsname = socket.gethostbyaddr(remip)[0]
@@ -89,13 +89,11 @@ class Snoopie():
 				# Add Host Name to dict
 				harvest[item]['Host Name'] = dnsname
 				
-				#db
-				print(f'POSTRES: {dnsname}')
+				if args.debug:
+					print(f'\nFound Host Name:\n{harvest[item]}\n')
 			
 			# If the lookup fails and the IP isn't 'None' then call it suspect
 			except:
-				if args.debug:
-					raise
 				
 				# Check that there was an IP to check in on
 				if remip != 'None':
@@ -104,10 +102,13 @@ class Snoopie():
 					sus_dict = harvest[item]
 					
 					# Add reason for suspicion 
-					sus_dict['Suspicion'] = 'DNS does not resolve'
+					sus_dict['Suspicion'] = 'DNS'
 					
 					# Pass into a seperate list for later assessment
 					self.suspect.append(sus_dict)
+					
+					if args.debug:
+						print(f'\nSuspicious DNS:\n{harvest[item]}\n')
 						
 				
 				# Proceed to the next assessment
@@ -128,10 +129,13 @@ class Snoopie():
 					sus_dict = harvest[item]
 					
 					# Add reason for suspicion
-					sus_dict['Suspicion'] = 'HTTPS not present'
+					sus_dict['Suspicion'] = 'HTTPS'
 					
 					# Pass into a seperate list for later assessment
 					self.suspect.append(sus_dict)
+					
+					if args.debug:
+						print(f'\nSuspicious Encryption:\n{harvest[item]}\n')
 					
 		# for each connection, check if there is a suspicious up or down data transfer
 		for item in range(len(harvest)):
@@ -158,34 +162,73 @@ class Snoopie():
 			
 					# Calculate the 1:N raio
 					metric = int(upbytes) // int(downbytes)
+					
 			
-					# If the ratio is 150 percent or more then classify as suspicious
-					if metric >= 2:
-				
-						#db
-						print(f' METRIC: {metric}')
+					# If the ratio is 400 percent or more then classify as suspicious
+					if metric >= 4:
 					
 						# Call suspect
 						# Copy dict object
 						sus_dict = harvest[item]
 						
 						# Add reason for suspicion
-						sus_dict['Suspicion'] = 'Sending significantly more data than receiving'
+						sus_dict['Suspicion'] = 'SIZE'
 					
 						# Pass into a seperate list for later assessment
 						self.suspect.append(sus_dict)				
 				
-		
+						if args.debug:
+							print(f'\nSuspicious DataMetric ({metric}00%):\n{harvest[item]}\n')
 		
 		# Finally consolidate all suspect connections
 		# If the same connection is suspect for multiple reasons, each reason lists the entire connection again
 		# So we will find such cases and make them into a single connection listing with multiple reasons under 'Suspicion'
-		help.sus_check(self.suspect)		
+		self.suspect = help.sus_check(self.suspect)		
+		
+		
+		if args.debug:
+			for item in self.suspect:
+				print(f'\nSuspect:\n{item}\n')
+		
+		
+	def report(self):
+	
+		# Report and record, depending on flags, the suspect information
+		
+		#db
+		for item in self.suspect:
+			print(f'\nReporting on: {item}\n')
+			
+		# Determine if filename is user-defined or default
+		if args.output is not None:
+			try:
+				filename = str(args.output.split('.')[0]) + '.json'
+			except:
+				pass
+		else:
+			filename = str(datetime.now()) + '.json'		
 		
 		
 		
+		# Print and save as directed by arguments		
+		if not args.hidden:
+			for item in range(len(self.suspect)):
+				print(f'\nSuspicion #{item}:\n{self.suspect[item]}\n')
 		
-		
+		f = open(filename, 'a+')
+		for item in self.suspect:
+			f.write(json.dumps(item))
+			f.write('\n\n')
+		f.close()	
+			
+	
+
+'''
+
+	PLACEHOLDER FOR SNIFFIE CLASS
+
+
+'''				
 		
 		
 		
