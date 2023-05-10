@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 help_menu = '''
 
 	-sf, --sniff :: Actively monitor traffic using PyShark
