@@ -1,7 +1,10 @@
 #!/bin/env python3
 
 from arguments import args
-import math, deepdiff
+import math, os
+from time import sleep
+import psutil
+
 
 '''
 
@@ -181,7 +184,7 @@ def little_bytes(updata_as_str,downdata_as_str):
 	
 '''
 
-Helper function to help the get_data function parse for Linux;
+Helper function to help the get_data function parse /dev/net/proc;
 	Goes inside get_data
 
 '''
@@ -233,6 +236,10 @@ def parse_proc(chunk):
 
 Helper function to scrape up/down data from system and parse it to be passed into the ListDict
 
+	Yes, aware that psutil can do this with 1/10 the code... But didn't find that doc 
+		item until after this was written and can't bring myself to slash the 
+		results of the struggle >.<
+
 '''
 
 def get_data(single_connection,pid_as_str):
@@ -268,6 +275,29 @@ def get_data(single_connection,pid_as_str):
 	# Returns the two element LIST from parse_proc
 	return return_data
 	
+	
+'''
+
+Helper function to pull CPU percentage
+
+'''
+
+def get_cpu(pid):
+	
+	# Force int for redundancy
+	pid = int(pid)
+	
+	# Label the process
+	process = psutil.Process(pid)
+	
+	# Call cpu percent
+	cpup = process.cpu_percent()
+	
+	# Send it
+	return cpup
+	
+	
+	
 '''
 
 Helper function to take suspect list and figure out which connections are the same with multiple reasons and consolidate them
@@ -297,6 +327,56 @@ def sus_check(sus_list):
 		
 	return trunc_ips
 	
+	
+	
+'''
+
+Helper function for credits and banner roll
+
+'''
+
+def prn(string,speed):
+
+	# tool for printing strings letter by letter, while contained within some given margins for aesthetic purposes
+	# margins solved via multi-line string formatting, this will follow the format the text is set in
+	text = string
+	my_list = []
+	for letter in text:
+		
+		my_list.append(letter)
+		show_list = ''.join(my_list)
+		sleep(speed)  #DEFAULT 0.04
+		os.system('clear')
+		print(show_list)
+	
+def roll_credits():
+
+	prn(headers.pretty_banner,0.02)
+	sleep(1)
+	
+	prn(footers.authors,0.02)
+	sleep(1)
+	
+	prn(footers.story,0.02)
+	sleep(1)
+	
+	prn('A great thank you to the following sources:',0.02)
+	sleep(0.5)
+	prn(citations.citations,0.02)
+	sleep(3)
+	
+	os.system('clear')
+	
+	print(headers.pretty_banner)
+	
+	
+	
+	
+	
+	
+	
+	
+	
 if __name__ == "__main__":
 
 	sample = '''Inter-|   Receive                                                |  Transmit
@@ -309,16 +389,5 @@ lxcbr0:       0       0    0    0    0     0          0         0        0      
 	
 	### REPLACE PID WITH SOME ACTIVE PID FROM TEST SYSTEM ###
 	get_data(sample,'2190')
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
